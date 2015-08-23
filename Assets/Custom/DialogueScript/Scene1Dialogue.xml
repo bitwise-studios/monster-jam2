@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scene>
+	<!-- Character Definitions for all scenes in file -->
+	<characters>
+		<!--
+			Format of character definition:
+			id: a short mnemonic ID for the character
+			name: the displayed name of the character
+		-->
+		<character
+			id="narr"
+			name=""/>
+		<character
+			id="mc"
+			name="Bob"/>
+		<character
+			id="mom"
+			name="Mother"/>
+		<character
+			id="dog"
+			name="Dog"/>
+	</characters>
+
+	<!-- Dialogue definitions -->
+	<!--
+		Scene tag format:
+		id: A short mnemonic for the dialogue
+		name: The displayed name of the dialogue (May or may not be used)
+
+		body: text tags denoting the conversation
+	-->
+	<dialogue id="athomestart" name="Home">
+		<!-- 
+			Format of a dialogue element:
+			speaker: the ID of the speaker
+			
+			body: The text to be spoken. NOTE: watch out for text boz size. 
+				  If text is too long break it up into multiple <text> tags
+				  You can substitute character names by wrapping the character 
+				  id in $(). Remember: escaping that sequence is not implemented
+				  due to time constraints and laziness.
+
+			Example:
+				<text speaker="mom">Hey $(mc) don't eat that chocolate on the table!</text>
+		-->
+
+		<text speaker="mom">Hey $(mc) don't eat that chocolate on the table!</text>
+		<text speaker="dog">Woof!</text>
+		<text speaker="mc">...</text>
+	</dialogue>
+</scene>
