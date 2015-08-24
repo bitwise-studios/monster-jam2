@@ -3,8 +3,10 @@ using System.Collections;
 
 public class Tetromino : MonoBehaviour {
     // Time since last gravity tick
-    protected float lastFall = 0;
-    float lockDelay = 1.0f;
+    float lastFall = 0;
+    float lockDelay = 0.5f; // should be used in 20G mode...
+    float fallRate = 0.5f; // seconds per fall
+    float clearDelay = 1.0f;
     [SerializeField] private AudioClip spawnSound;
 
     // Use this for initialization
@@ -15,8 +17,13 @@ public class Tetromino : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         if (Spawner.isLocking) return;
+        // Move Down
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            moveDown();
+        }
         // Move Left
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             moveLeft();
         }
@@ -38,13 +45,14 @@ public class Tetromino : MonoBehaviour {
             rotateRight();
         }
 
-        else if(Input.GetKeyDown(KeyCode.UpArrow))
+        // soft drop is broken right now
+        else if (Input.GetKeyDown(KeyCode.UpArrow) && false)
         {
             softDrop();
         }
 
         // Fall
-        else if (Time.time - lastFall >= 1)
+        else if (Time.time - lastFall >= fallRate)
         {
             moveDown();
 
@@ -114,9 +122,10 @@ public class Tetromino : MonoBehaviour {
     {
         if (Grid.isFullRows())
         {
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(clearDelay);
             // Clear filled horizontal lines
-            Grid.deleteFullRows();
+            int rowsCleared = Grid.deleteFullRows();
+            Spawner.lineClearNotify(rowsCleared);
         }
 
         Spawner.isLocking = false;
@@ -127,7 +136,7 @@ public class Tetromino : MonoBehaviour {
 
     void softDrop()
     {
-        Vector3 dropDistance = new Vector3(0, 1, 0);
+        Vector3 dropDistance = new Vector3(0, -1, 0);
         if (!isValidGridPos(dropDistance))
         {
             return;
@@ -135,14 +144,15 @@ public class Tetromino : MonoBehaviour {
         
         while (isValidGridPos(dropDistance))
         {
-            dropDistance.y++;
+            dropDistance.y--;
         }
 
         transform.position += dropDistance;
-
+        updateGrid();
+        
     }
 
-    protected bool isValidGridPos(Vector3 change)
+    bool isValidGridPos(Vector3 change)
     {
         foreach (Transform child in transform)
         {

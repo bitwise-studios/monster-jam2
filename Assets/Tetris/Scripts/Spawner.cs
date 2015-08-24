@@ -8,6 +8,10 @@ public class Spawner : MonoBehaviour {
 
     public static bool isLocking = false;
 
+    // these are static because y0l0
+    private static float lastClearTime = 0;
+    private static long rageLevel = 0;
+
 	// Use this for initialization
 	void Start () {
         spawnNext();
@@ -15,8 +19,38 @@ public class Spawner : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
+        if(Time.time - lastClearTime > 5)
+        {
+            rageLevel *= 2;
+            rageLevel++;
+            lastClearTime = Time.time;
+        }
 	}
+
+    public static void lineClearNotify(int lines)
+    {
+        lastClearTime = Time.time;
+        rageLevel /= (long) Mathf.Pow(2, lines);
+    }
+
+    public static long getRageLevel()
+    {
+        return rageLevel;
+    }
+
+    void resetGame()
+    {
+        // need to clear grid
+        Grid.clearAllRows();
+        GetComponentInChildren<AudioSource>().Play();
+        Tetromino[] tetrominos = FindObjectsOfType<Tetromino>();
+        foreach(Tetromino t in tetrominos)
+        {
+            Destroy(t);
+        }
+        isLocking = false;
+        Start();
+    }
 
     bool isDeadCheck()
     {
@@ -52,6 +86,9 @@ public class Spawner : MonoBehaviour {
             }
 
             print("Game over!");
+            isLocking = true;
+            rageLevel *= 10;
+            Invoke("resetGame", 1.0f);
             return;
         }
 

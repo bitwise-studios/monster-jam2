@@ -70,26 +70,34 @@ public class Grid : MonoBehaviour {
         return false;
     }
 
-    public static void deleteFullRows()
+    public static int deleteFullRows()
     {
+        int rowsCleared = 0;
         for (int y = 0; y < h; ++y)
         {
             if (isRowFull(y))
             {
+                rowsCleared++;
                 deleteRow(y);
                 decreaseRowsAbove(y + 1);
                 --y;
             }
         }
+        return rowsCleared;
     }
 
-    // Use this for initialization
-    void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    public static void clearAllRows()
+    {
+        for(int y = 0; y < h; y++)
+        {
+            for (int x = 0; x < w; ++x)
+            {
+                if (grid[x, y] != null)
+                {
+                    Destroy(grid[x, y].gameObject);
+                    grid[x, y] = null;
+                }
+            }
+        }
+    }
 }
