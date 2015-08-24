@@ -5,6 +5,7 @@ public class Spawner : MonoBehaviour {
 
     [SerializeField] private GameObject[] groups;
     private GameObject currentTetromino;
+	private AI ai = new AI(0.510066, 0.760666, 0.35663, 0.184483);
 
 	// Use this for initialization
 	void Start () {
@@ -51,7 +52,7 @@ public class Spawner : MonoBehaviour {
 
         // Spawn group at current position
         currentTetromino = (GameObject) Instantiate(groups[i], transform.position, Quaternion.identity);
-
+		AI.Result res = ai.Best(Grid.ToSimpleGrid(), currentTetromino.GetComponent<Tetromino>());
     }
 
     public GameObject getCurrentTetromino()

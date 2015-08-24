@@ -71,6 +71,16 @@ public class Grid : MonoBehaviour {
         }
     }
 
+	public static SimpleGrid ToSimpleGrid() {
+		var simple = new int[h, w];
+		for (var c = 0; c < w; c++) {
+			for (var r = 0; r < h; r++) {
+				simple[r, c] = (grid[c, r] != null? 1: 0);
+			}
+		}
+		return new SimpleGrid(w, h, simple);
+	}
+
     // Use this for initialization
     void Start () {
 	

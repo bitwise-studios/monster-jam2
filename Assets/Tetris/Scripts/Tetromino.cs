@@ -221,4 +221,25 @@ public class Tetromino : MonoBehaviour {
             Grid.grid[(int)v.x, (int)v.y] = child;
         }
     }
+
+	public AIPiece ToAIPiece() {
+		int starty = 999, startx = 999;
+		int endx = -1, endy = -1;
+        foreach (Transform child in transform)
+        {
+            Vector2 v = Grid.roundVec2(child.position);
+			if ((int)v.x < startx) startx = (int)v.x;
+			if ((int)v.y < starty) starty = (int)v.y;
+			if ((int)v.x > endx) endx = (int)v.x;
+			if ((int)v.y > endy) endy = (int)v.y;
+        }
+		int[,] outmino = new int[endy + 1 - starty, endx + 1 - startx];
+        foreach (Transform child in transform)
+        {
+            Vector2 v = Grid.roundVec2(child.position);
+			outmino[((int)v.y) - starty, ((int)v.x) - startx] = 1;
+        }
+		return new AIPiece(startx, starty, outmino);
+	}
+
 }
