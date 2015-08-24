@@ -155,6 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efceb4ad12b629a4294c446ca273a140, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnSound: {fileID: 8300000, guid: f9ddbde73c4cdbf47899940be2aec33a, type: 3}
 --- !u!212 &21207282
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -274,6 +275,10 @@ Prefab:
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 0}
+      propertyPath: spawnSound
+      value: 
+      objectReference: {fileID: 8300000, guid: f9ddbde73c4cdbf47899940be2aec33a, type: 3}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 125386}

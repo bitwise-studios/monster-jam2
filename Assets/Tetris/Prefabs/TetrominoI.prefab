@@ -10,7 +10,7 @@ GameObject:
   - 4: {fileID: 414652}
   - 212: {fileID: 21205740}
   m_Layer: 0
-  m_Name: mino (2)
+  m_Name: mino3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -42,7 +42,7 @@ GameObject:
   - 4: {fileID: 444698}
   - 212: {fileID: 21268246}
   m_Layer: 0
-  m_Name: mino (1)
+  m_Name: mino2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -58,7 +58,7 @@ GameObject:
   - 4: {fileID: 419520}
   - 212: {fileID: 21214656}
   m_Layer: 0
-  m_Name: mino (3)
+  m_Name: mino4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -74,7 +74,7 @@ GameObject:
   - 4: {fileID: 429820}
   - 212: {fileID: 21272926}
   m_Layer: 0
-  m_Name: mino
+  m_Name: mino1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -155,6 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efceb4ad12b629a4294c446ca273a140, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnSound: {fileID: 8300000, guid: 4cbbdd59c49cf35499a771dcd76e5e58, type: 3}
 --- !u!212 &21205740
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -265,7 +266,15 @@ Prefab:
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 0}
-    m_Modifications: []
+    m_Modifications:
+    - target: {fileID: 0}
+      propertyPath: spawnSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 4cbbdd59c49cf35499a771dcd76e5e58, type: 3}
+    - target: {fileID: 0}
+      propertyPath: m_Name
+      value: mino4
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 119216}

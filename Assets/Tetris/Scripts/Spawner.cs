@@ -4,6 +4,7 @@ using System.Collections;
 public class Spawner : MonoBehaviour {
 
     [SerializeField] private GameObject[] groups;
+    private GameObject currentTetromino;
 
 	// Use this for initialization
 	void Start () {
@@ -15,9 +16,24 @@ public class Spawner : MonoBehaviour {
 
 	}
 
+    bool isDeadCheck()
+    {
+        for(int i = -5; i <= 1; i++)
+        {
+            for(int ii = -1; i <= 1; i++)
+            {
+                if (Grid.grid[(int)transform.position.x + i, (int)transform.position.y + ii] != null)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public void spawnNext()
     {
-        if (Grid.grid[(int)transform.position.x, (int)transform.position.y] != null)
+        if (isDeadCheck())
         {
             AudioSource[] allAudioSources = FindObjectsOfType<AudioSource>();
 
@@ -34,7 +50,12 @@ public class Spawner : MonoBehaviour {
         int i = Random.Range(0, groups.Length);
 
         // Spawn group at current position
-        Instantiate(groups[i], transform.position, Quaternion.identity);
+        currentTetromino = (GameObject) Instantiate(groups[i], transform.position, Quaternion.identity);
 
+    }
+
+    public GameObject getCurrentTetromino()
+    {
+        return currentTetromino;
     }
 }

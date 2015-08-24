@@ -4,6 +4,7 @@ using System.Collections;
 public class Tetromino : MonoBehaviour {
     // Time since last gravity tick
     protected float lastFall = 0;
+    float lockDelay = 1.0f;
     [SerializeField] private AudioClip spawnSound;
 
     // Use this for initialization
@@ -17,31 +18,13 @@ public class Tetromino : MonoBehaviour {
         // Move Left
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            // Modify position
-            transform.position += new Vector3(-1, 0, 0);
-
-            // See if valid
-            if (isValidGridPos())
-                // It's valid. Update grid.
-                updateGrid();
-            else
-                // It's not valid. revert.
-                transform.position += new Vector3(1, 0, 0);
+            moveLeft();
         }
 
         // Move Right
         else if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            // Modify position
-            transform.position += new Vector3(1, 0, 0);
-
-            // See if valid
-            if (isValidGridPos())
-                // It's valid. Update grid.
-                updateGrid();
-            else
-                // It's not valid. revert.
-                transform.position += new Vector3(-1, 0, 0);
+            moveRight();
         }
 
         // Rotate
@@ -55,36 +38,112 @@ public class Tetromino : MonoBehaviour {
             rotateRight();
         }
 
-        // Move Downwards and Fall
-        else if (Input.GetKeyDown(KeyCode.DownArrow) ||
-                 Time.time - lastFall >= 1)
+        else if(Input.GetKeyDown(KeyCode.UpArrow))
         {
-            // Modify position
-            transform.position += new Vector3(0, -1, 0);
+            softDrop();
+        }
 
-            // See if valid
-            if (isValidGridPos())
-            {
-                // It's valid. Update grid.
-                updateGrid();
-            }
-            else
-            {
-                // It's not valid. revert.
-                transform.position += new Vector3(0, 1, 0);
-
-                // Clear filled horizontal lines
-                Grid.deleteFullRows();
-
-                // Spawn next Group
-                FindObjectOfType<Spawner>().spawnNext();
-
-                // Disable script
-                enabled = false;
-            }
+        // Fall
+        else if (Time.time - lastFall >= 1)
+        {
+            moveDown();
 
             lastFall = Time.time;
         }
+
+    }
+
+    public void moveLeft()
+    {
+        Vector3 nextMovement = new Vector3(-1, 0, 0);
+
+        // See if valid
+        if (isValidGridPos(nextMovement))
+        {
+            // Modify position
+            transform.position += nextMovement;
+            // It's valid. Update grid.
+            updateGrid();
+        }
+    }
+
+    public void moveRight()
+    {
+        Vector3 nextMovement = new Vector3(1, 0, 0);
+
+        // See if valid
+        if (isValidGridPos(nextMovement))
+        {
+            // Modify position
+            transform.position += nextMovement;
+            // It's valid. Update grid.
+            updateGrid();
+        }
+    }
+
+    public void moveDown()
+    {
+        // Modify position
+        Vector3 positionChange = new Vector3(0, -1, 0);
+
+        // See if valid
+        if (isValidGridPos(positionChange))
+        {
+            transform.position += positionChange;
+            // It's valid. Update grid.
+            updateGrid();
+        }
+        else
+        {
+            lockPiece();
+        }
+    }
+
+    void lockPiece()
+    {
+        // Clear filled horizontal lines
+        Grid.deleteFullRows();
+
+        // Spawn next Group
+        FindObjectOfType<Spawner>().spawnNext();
+
+        // Disable script
+        enabled = false;
+    }
+
+    void softDrop()
+    {
+        Vector3 dropDistance = new Vector3(0, 1, 0);
+        if (!isValidGridPos(dropDistance))
+        {
+            return;
+        }
+        
+        while (isValidGridPos(dropDistance))
+        {
+            dropDistance.y++;
+        }
+
+        transform.position += dropDistance;
+
+    }
+
+    protected bool isValidGridPos(Vector3 change)
+    {
+        foreach (Transform child in transform)
+        {
+            Vector2 v = Grid.roundVec2(child.position + change);
+
+            // Not inside Border?
+            if (!Grid.insideBorder(v))
+                return false;
+
+            // Block in grid cell (and not part of same group)?
+            if (Grid.grid[(int)v.x, (int)v.y] != null &&
+                Grid.grid[(int)v.x, (int)v.y].parent != transform)
+                return false;
+        }
+        return true;
     }
 
     protected bool isValidGridPos()
@@ -139,6 +198,9 @@ public class Tetromino : MonoBehaviour {
         {
             // It's not valid. revert.
             transform.Rotate(0, 0, 90);
+
+            // wall kick
+            
             return false;
         }
     }
