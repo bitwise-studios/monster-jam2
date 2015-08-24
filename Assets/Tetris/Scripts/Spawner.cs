@@ -9,8 +9,10 @@ public class Spawner : MonoBehaviour {
     public static bool isLocking = false;
 
     // these are static because y0l0
-    private static float lastClearTime = 0;
-    private static long rageLevel = 0;
+    private static int lastClear = 0; // how many blocks ago was the last clear?
+    private static long rageLevel = 100;
+    private static long score = 0;
+    private static bool gameOver = false;
 
 	// Use this for initialization
 	void Start () {
@@ -19,23 +21,51 @@ public class Spawner : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if(Time.time - lastClearTime > 5)
-        {
-            rageLevel *= 2;
-            rageLevel++;
-            lastClearTime = Time.time;
-        }
+        
+        
 	}
+
+    public static long getScore()
+    {
+        return score;
+    }
 
     public static void lineClearNotify(int lines)
     {
-        lastClearTime = Time.time;
+        lastClear = 0;
         rageLevel /= (long) Mathf.Pow(2, lines);
+    }
+
+    public static void blockLockNotify()
+    {
+        lastClear++;
+        if (lastClear != 0)
+        {
+            if (lastClear % 5 == 0)
+            {
+                // update rage level
+                rageLevel = (long)(rageLevel * 2);
+                rageLevel++;
+            }
+        }
+        if(rageLevel > 100)
+        {
+            score += (long) rageLevel / 10;
+        }
+        else
+        {
+            score += (rageLevel - 100) * 10;
+        }
     }
 
     public static long getRageLevel()
     {
         return rageLevel;
+    }
+
+    public static bool isGameOver()
+    {
+        return gameOver;
     }
 
     void resetGame()
@@ -87,8 +117,17 @@ public class Spawner : MonoBehaviour {
 
             print("Game over!");
             isLocking = true;
-            rageLevel *= 10;
-            Invoke("resetGame", 1.0f);
+            if(rageLevel == 0)
+            {
+                rageLevel = 10;
+            }
+            else
+                rageLevel *= 10;
+
+            if (rageLevel <= 10000)
+                Invoke("resetGame", 1.0f);
+            else
+                gameOver = true;
             return;
         }
 

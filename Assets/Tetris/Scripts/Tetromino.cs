@@ -114,6 +114,9 @@ public class Tetromino : MonoBehaviour {
         enabled = false;
 
         //Invoke("LockPieceHelper", 1.0f);
+
+        Spawner.blockLockNotify();
+
         StartCoroutine(LockPieceHelper());
 
     }
