@@ -14,7 +14,7 @@ public class Tetromino : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        /* TODO: replace with AI code */
+        if (Spawner.isLocking) return;
         // Move Left
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
@@ -101,14 +101,28 @@ public class Tetromino : MonoBehaviour {
 
     void lockPiece()
     {
-        // Clear filled horizontal lines
-        Grid.deleteFullRows();
+        Spawner.isLocking = true;
+        // Disable script
+        enabled = false;
+
+        //Invoke("LockPieceHelper", 1.0f);
+        StartCoroutine(LockPieceHelper());
+
+    }
+
+    IEnumerator LockPieceHelper()
+    {
+        if (Grid.isFullRows())
+        {
+            yield return new WaitForSeconds(1.0f);
+            // Clear filled horizontal lines
+            Grid.deleteFullRows();
+        }
+
+        Spawner.isLocking = false;
 
         // Spawn next Group
         FindObjectOfType<Spawner>().spawnNext();
-
-        // Disable script
-        enabled = false;
     }
 
     void softDrop()
@@ -164,7 +178,7 @@ public class Tetromino : MonoBehaviour {
         return true;
     }
 
-    virtual protected bool rotateLeft()
+    public void rotateLeft()
     {
         transform.Rotate(0, 0, 90);
 
@@ -173,17 +187,15 @@ public class Tetromino : MonoBehaviour {
         {
             // It's valid. Update grid.
             updateGrid();
-            return true;
         }
         else
         {
             // It's not valid. revert.
             transform.Rotate(0, 0, -90);
-            return false;
         }
     }
 
-    virtual protected bool rotateRight()
+    public void rotateRight()
     {
         transform.Rotate(0, 0, -90);
 
@@ -192,7 +204,6 @@ public class Tetromino : MonoBehaviour {
         {
             // It's valid. Update grid.
             updateGrid();
-            return true;
         }
         else
         {
@@ -201,7 +212,6 @@ public class Tetromino : MonoBehaviour {
 
             // wall kick
             
-            return false;
         }
     }
 

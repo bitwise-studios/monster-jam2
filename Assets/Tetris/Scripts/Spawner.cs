@@ -6,6 +6,8 @@ public class Spawner : MonoBehaviour {
     [SerializeField] private GameObject[] groups;
     private GameObject currentTetromino;
 
+    public static bool isLocking = false;
+
 	// Use this for initialization
 	void Start () {
         spawnNext();
@@ -33,13 +35,20 @@ public class Spawner : MonoBehaviour {
 
     public void spawnNext()
     {
+        if (isLocking) return;
         if (isDeadCheck())
         {
             AudioSource[] allAudioSources = FindObjectsOfType<AudioSource>();
+            Tetromino[] allTetrominoes = FindObjectsOfType<Tetromino>();
 
             foreach (AudioSource audioS in allAudioSources)
             {
                 audioS.Stop();
+            }
+
+            foreach(Tetromino t in allTetrominoes)
+            {
+                t.enabled = false;
             }
 
             print("Game over!");

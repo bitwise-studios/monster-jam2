@@ -58,6 +58,18 @@ public class Grid : MonoBehaviour {
         return true;
     }
 
+    public static bool isFullRows()
+    {
+        for (int y = 0; y < h; ++y)
+        {
+            if (isRowFull(y))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void deleteFullRows()
     {
         for (int y = 0; y < h; ++y)

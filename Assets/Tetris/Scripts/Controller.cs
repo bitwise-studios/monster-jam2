@@ -10,6 +10,7 @@ public class Controller : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (Spawner.isLocking) return;
         Tetromino currentPiece = GameObject.Find("Spawner").GetComponent<Spawner>()
             .getCurrentTetromino().GetComponent<Tetromino>();
         if (Input.GetKey(KeyCode.DownArrow))
