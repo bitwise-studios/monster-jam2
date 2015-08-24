@@ -13,11 +13,13 @@ public class Spawner : MonoBehaviour {
     private static long rageLevel = 100;
     private static long score = 0;
     private static bool gameOver = false;
+    private int nextIndex;
 
 	// Use this for initialization
 	void Start () {
         spawnNext();
-	}
+        nextIndex = Random.Range(0, groups.Length);
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -48,13 +50,17 @@ public class Spawner : MonoBehaviour {
                 rageLevel++;
             }
         }
-        if(rageLevel > 100)
+        if(rageLevel > 1000)
+        {
+            score += (long)(rageLevel / (Mathf.Log10(rageLevel) * 10));
+        }
+        else if(rageLevel > 100)
         {
             score += (long) rageLevel / 10;
         }
         else
         {
-            score += (rageLevel - 100) * 10;
+            score += (long)((rageLevel - 100) * (score > 10 ? Mathf.Log10(score) : 1));
         }
     }
 
@@ -132,10 +138,11 @@ public class Spawner : MonoBehaviour {
         }
 
         // random index
-        int i = Random.Range(0, groups.Length);
+        //int i = Random.Range(0, groups.Length);
 
         // Spawn group at current position
-        currentTetromino = (GameObject) Instantiate(groups[i], transform.position, Quaternion.identity);
+        currentTetromino = (GameObject) Instantiate(groups[nextIndex], transform.position, Quaternion.identity);
+        nextIndex = Random.Range(0, groups.Length);
 
     }
 
